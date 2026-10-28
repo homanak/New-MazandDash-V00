@@ -1,0 +1,4 @@
+const form=document.querySelector('#upload-form'), file=document.querySelector('#file'), drop=document.querySelector('#drop'), message=document.querySelector('#message');
+file.addEventListener('change',()=>{if(file.files.length) message.textContent='فایل انتخاب‌شده: '+file.files[0].name});
+for(const event of ['dragover','drop']) drop.addEventListener(event,e=>{e.preventDefault();if(event==='drop'&&e.dataTransfer.files.length){file.files=e.dataTransfer.files;message.textContent='فایل انتخاب‌شده: '+file.files[0].name}});
+form.addEventListener('submit',async e=>{e.preventDefault();if(!file.files.length){message.textContent='ابتدا یک فایل انتخاب کنید.';return}message.textContent='در حال بارگذاری...';try{const response=await fetch('/upload',{method:'POST',body:new FormData(form)});const data=await response.json();if(!response.ok)throw Error(data.error);location.reload()}catch(err){message.textContent=err.message||'بارگذاری ناموفق بود.'}});
